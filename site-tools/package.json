@@ -1,0 +1,12 @@
+{
+  "name": "sensus-capture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "^1.58.0",
+    "pngjs": "^7.0.0"
+  }
+}

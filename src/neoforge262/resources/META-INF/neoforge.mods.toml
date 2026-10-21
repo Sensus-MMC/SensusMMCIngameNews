@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="sensusmmc"
+version="0.1.0"
+displayName="SensusMMC In-Game News"
+description="Read SensusMMC articles in-game on the News Tablet."
+logoFile="logo.png"
+
+[[dependencies.sensusmmc]]
+modId="neoforge"
+type="required"
+versionRange="[26.2.0,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.sensusmmc]]
+modId="minecraft"
+type="required"
+versionRange="[26.2,26.3)"
+ordering="NONE"
+side="BOTH"

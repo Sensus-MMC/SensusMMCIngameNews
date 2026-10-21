@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "sensusmmc",
+  "version": "0.1.0",
+  "name": "SensusMMC In-Game News",
+  "description": "Read SensusMMC articles in-game on the News Tablet.",
+  "authors": ["SensusMMC"],
+  "license": "All Rights Reserved",
+  "icon": "logo.png",
+  "accessWidener": "sensusmmc.accesswidener",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["sensusmmc.news.fabric.SensusNewsFabric"],
+    "client": ["sensusmmc.news.fabric.SensusNewsFabricClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.0",
+    "minecraft": "~26.2",
+    "java": ">=25"
+  }
+}

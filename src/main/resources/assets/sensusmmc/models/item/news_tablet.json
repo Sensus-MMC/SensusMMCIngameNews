@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "sensusmmc:item/newstablet_off"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "sensusmmc:unread": 1.0
+      },
+      "model": "sensusmmc:item/news_tablet_unread"
+    }
+  ]
+}

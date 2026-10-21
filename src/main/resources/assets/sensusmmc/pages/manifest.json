@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "generated": "2026-10-21T19:32:51.772Z",
+  "viewport": {
+    "cssWidth": 400,
+    "cssHeight": 478,
+    "dpr": 2,
+    "sourceWidth": 800,
+    "sourceHeight": 956,
+    "scale": 0.25
+  },
+  "fonts": {
+    "georgia": true,
+    "arial": true
+  },
+  "pages": [
+    {
+      "id": "home",
+      "url": "/",
+      "title": "Sensus MMC - Reliable MMC News",
+      "sourceWidth": 800,
+      "sourceHeight": 1348,
+      "cssWidth": 400,
+      "cssHeight": 674,
+      "tiles": [
+        {
+          "file": "home/0000.png",
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 1024,
+          "contentWidth": 800,
+          "contentHeight": 1024
+        },
+        {
+          "file": "home/0001.png",
+          "x": 0,
+          "y": 1024,
+          "width": 1024,
+          "height": 1024,
+          "contentWidth": 800,
+          "contentHeight": 324
+        }
+      ],
+      "links": [
+        {
+          "x": 40,
+          "y": 0,
+          "width": 256,
+          "height": 144,
+          "href": "/",
+          "external": false,
+          "text": ""
+        },
+        {
+          "x": 40,
+          "y": 166,
+          "width": 142,
+          "height": 71,
+          "href": "/",
+          "external": false,
+          "text": "Home"
+        },
+        {
+          "x": 182,
+          "y": 166,
+          "width": 138,
+          "height": 71,
+          "href": "/about",
+          "external": false,
+          "text": "About"
+        },
+        {
+          "x": 320,
+          "y": 166,
+          "width": 153,
+          "height": 71,
+          "href": "https://github.com/Sensus-MMC",
+          "external": true,
+          "text": "GitHub"
+        },
+        {
+          "x": 473,
+          "y": 166,
+          "width": 162,
+          "height": 71,
+          "href": "https://discord.gg/UKd3UjGKwQ",
+          "external": true,
+          "text": "Discord"
+        },
+        {
+          "x": 194,
+          "y": 353,
+          "width": 224,
+          "height": 96,
+          "href": "/articles/welcome-to-sensus-mmc",
+          "external": false,
+          "text": "Welcome to Sensus MMC"
+        },
+        {
+          "x": 608,
+          "y": 862,
+          "width": 125,
+          "height": 34,
+          "href": "/about",
+          "external": false,
+          "text": "More info"
+        }
+      ]
+    },
+    {
+      "id": "articles-welcome-to-sensus-mmc",
+      "url": "/articles/welcome-to-sensus-mmc",
+      "title": "Welcome to Sensus MMC - Sensus MMC",
+      "sourceWidth": 800,
+      "sourceHeight": 1166,
+      "cssWidth": 400,
+      "cssHeight": 583,
+      "tiles": [
+        {
+          "file": "articles-welcome-to-sensus-mmc/0000.png",
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 1024,
+          "contentWidth": 800,
+          "contentHeight": 1024
+        },
+        {
+          "file": "articles-welcome-to-sensus-mmc/0001.png",
+          "x": 0,
+          "y": 1024,
+          "width": 1024,
+          "height": 1024,
+          "contentWidth": 800,
+          "contentHeight": 142
+        }
+      ],
+      "links": [
+        {
+          "x": 40,
+          "y": 0,
+          "width": 256,
+          "height": 144,
+          "href": "/",
+          "external": false,
+          "text": ""
+        },
+        {
+          "x": 40,
+          "y": 166,
+          "width": 142,
+          "height": 71,
+          "href": "/",
+          "external": false,
+          "text": "Home"
+        },
+        {
+          "x": 182,
+          "y": 166,
+          "width": 138,
+          "height": 71,
+          "href": "/about",
+          "external": false,
+          "text": "About"
+        },
+        {
+          "x": 320,
+          "y": 166,
+          "width": 153,
+          "height": 71,
+          "href": "https://github.com/Sensus-MMC",
+          "external": true,
+          "text": "GitHub"
+        },
+        {
+          "x": 86,
+          "y": 1077,
+          "width": 66,
+          "height": 46,
+          "href": "/",
+          "external": false,
+          "text": "Back"
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "url": "/about",
+      "title": "About - Sensus MMC",
+      "sourceWidth": 800,
+      "sourceHeight": 1532,
+      "cssWidth": 400,
+      "cssHeight": 766,
+      "tiles": [
+        {
+          "file": "about/0000.png",
+          "x": 0,
+          "y": 0,
+          "width": 1024,
+          "height": 1024,
+          "contentWidth": 800,
+          "contentHeight": 1024
+        },
+        {
+          "file": "about/0001.png",
+          "x": 0,
+          "y": 1024,
+          "width": 1024,
+          "height": 1024,
+          "contentWidth": 800,
+          "contentHeight": 508
+        }
+      ],
+      "links": [
+        {
+          "x": 40,
+          "y": 0,
+          "width": 256,
+          "height": 144,
+          "href": "/",
+          "external": false,
+          "text": ""
+        },
+        {
+          "x": 40,
+          "y": 166,
+          "width": 142,
+          "height": 71,
+          "href": "/",
+          "external": false,
+          "text": "Home"
+        },
+        {
+          "x": 182,
+          "y": 166,
+          "width": 138,
+          "height": 71,
+          "href": "/about",
+          "external": false,
+          "text": "About"
+        },
+        {
+          "x": 320,
+          "y": 166,
+          "width": 153,
+          "height": 71,
+          "href": "https://github.com/Sensus-MMC",
+          "external": true,
+          "text": "GitHub"
+        }
+      ]
+    }
+  ]
+}
