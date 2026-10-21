@@ -36,7 +36,7 @@ public final class SensusNewsFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        NewsTabletState.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news-state.json"));
+        NewsConfig.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news.properties"));        NewsTabletState.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news-state.json"));
         TabletClientHooks.setOpener(() -> Minecraft.getInstance().setScreen(new NewsTabletScreen()));
         if (!NewsConfig.requireTablet()) {
             openTablet = KeyBindingHelper.registerKeyBinding(new KeyMapping(
