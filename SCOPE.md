@@ -619,19 +619,106 @@ Distribution/review:
 
 ---
 
-## 14. Milestones
+## 14. Build order
 
-| Phase | Deliverable | Est. |
+The order is driven by two rules: **the riskiest unknowns get tested first**, and
+**nothing UI-related is built before a real captured page exists**. The reference
+implementation is 1.20.1 because it has both loaders and the fastest iteration;
+26.2 comes last because it has a fallback.
+
+### Stage 0 — de-risk (2–3 d, two parallel tracks)
+
+| Track | Work | Gate |
 |---|---|---|
-| **0. Feasibility** | 8-node skeleton; 1.7.10 POT tile + CPU mips; 26.2 compile spike | 1–2 d |
-| **1. Capture tool** | Playwright script, geometry, tiles, link map, manifest, font checks, fixed-canvas handling | 2–3 d |
-| **2. `sensus-pages`** | Fetch, hash, cache, decode, mip chain, view math; CLI preview on desktop | 3–4 d |
-| **3. Mod core + 1.20.1** | Item, textures, screen, bridges, config, notifications | 4–6 d |
-| **4. 1.12.2 + 1.7.10** | Texture path, icon animation, chat, tooltips | 3–5 d |
-| **5. 1.21.1 + 26.2** | Modern texture/model bridges, keybinds | 3–6 d |
-| **6. Polish** | Error/offline panels, transitions, prefetch, packaging, docs, CI | 2–4 d |
+| **A. Toolchain** | Root Gradle + Stonecutter 8 nodes + Unimined snapshot; empty entrypoints; `build` all nodes; launch 1.20.1 | All 8 compile |
+| **A. GL probe** | 1.7.10: create a 1024² POT texture, upload a CPU mip chain, draw with scissor | Correct image, no GL errors |
+| **A. 26.2 probe** | Create/draw a GPU texture; item-model `select`; `GuiGraphics` blit signature | A texture renders on 26.2 |
+| **B. Capture** | Playwright on the local `_site`, 400×478 @ DPR 2, font check, fixed-canvas handling, one page → tiles + manifest + links | Page bundle looks right at 200×239 |
 
-Rough total: **3–5 weeks**, with Phase 0 and 26.2 carrying the risk.
+If the toolchain gate fails: split builds or pin 1.21.1. If the 26.2 probe fails:
+tooltip-only unread + no mips. If the canvas gate fails: flat background (Q9).
+
+### Stage 1 — freeze the format (1 d)
+
+- Schema v1 for `index.json` and `manifest.json`.
+- Checked-in fixtures: home, a normal article, a long (continuation) page.
+- Decide Q5 (width), Q9 (background), Q10 (fonts/host), Q12 (splitting).
+- Gate: fixtures validate and render from the CLI with no network.
+
+### Stage 2 — `sensus-pages` (3–4 d)
+
+JSON, fetch/ETag/hash, disk LRU, decode limits, CPU mip chain, scroll/tile math,
+link hit-testing, prefetch. Dev CLI: composite the 200×239 viewport at a given
+scroll offset to a PNG, and print hit-tests.
+
+Gate: CLI composites match the capture at several offsets; geometry unit tests
+pass; hostile/corrupt fixtures are rejected.
+
+### Stage 3 — 1.20.1 Forge vertical slice (3–4 d)
+
+Item, registration, model/texture, screen, `TextureBridge`, wheel/click/hover,
+error and offline panels. Fixtures first, live site second.
+
+Gate: playable in a dev client; cached page opens; links navigate.
+
+### Stage 4 — news, unread, notifications (2–3 d, overlaps Stage 3)
+
+`sensus-news` with a fake server; wire chat, read state, model override, tooltip.
+
+Gate: one chat line per new article; texture toggles; survives restart.
+
+### Stage 5 — 1.20.1 Fabric (1–2 d)
+
+Loader glue only; shared screen and libraries.
+
+Gate: parity with Forge.
+
+### Stage 6 — modern (3–5 d)
+
+1.21.1 NeoForge + Fabric: `NativeImage`, `ItemProperties`, keybinds. Then 26.2:
+confirm the texture path and item-model component, apply the Stage 0 fallbacks if
+needed.
+
+Gate: all modern nodes launch and render.
+
+### Stage 7 — legacy (4–6 d)
+
+1.12.2 (2–3 d): `DynamicTexture`, `ModelMeshDefinition`, GUI, wheel. Then 1.7.10
+(2–3 d): POT tiles + mips, scissor, icon animation, chat. Both on Java 8.
+
+Gate: no GL errors, correct crop, crisp text at GUI scale ≥ 2.
+
+### Stage 8 — polish and release (3–5 d)
+
+Prefetch tuning, transitions, GUI-scale hint, `/sensusmmc clearcache`, docs,
+privacy note, CI matrix, jars, mod metadata.
+
+Gate: Appendix C checklist.
+
+### Critical path and parallel work
+
+```
+Stage 0 ──► Stage 1 ──► Stage 2 ──► Stage 3 ──► Stage 5 ──► Stage 6 ──► Stage 8
+                          │            │
+                          └──► Stage 4 ┘
+                                       └──► Stage 7 ──┘
+```
+
+- Stage 0 Track A and Track B are independent and start together.
+- Stage 4 can run beside Stage 3 once the item exists.
+- 1.12.2, 1.7.10 and the 26.2 work are independent of each other.
+- 26.2 never blocks another node; it ships with a documented degradation if its
+  probes fail.
+
+### First week, concretely
+
+1. Scaffold the 8-node build and get `1.20.1-forge:runClient` up.
+2. Capture one real page (home) to the fixture format, including the font check.
+3. Prove the 1.7.10 POT/mip/scissor path and the 26.2 texture path.
+4. Freeze schema v1 and land the fixture bundle.
+5. Start `sensus-pages` with the scroll/crop math and the CLI compositor.
+
+Total estimate: **3–5 weeks**, with Stage 0 and 26.2 carrying the schedule risk.
 
 ---
 
