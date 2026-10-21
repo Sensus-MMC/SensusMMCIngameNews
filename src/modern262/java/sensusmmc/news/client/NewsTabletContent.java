@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 
 import sensusmmc.news.NewsTabletState;
@@ -16,7 +16,7 @@ import sensusmmc.news.SensusNews;
 import sensusmmc.sensusnews.NewsFeed;
 
 public final class NewsTabletContent {
-    private static final ResourceLocation BUNDLED_FEED =
+    private static final Identifier BUNDLED_FEED =
         ResourceLocations.of(SensusNews.MOD_ID, "pages/feed.json");
     private static boolean loaded;
 

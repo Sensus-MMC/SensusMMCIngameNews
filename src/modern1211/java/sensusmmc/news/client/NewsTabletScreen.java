@@ -203,7 +203,17 @@ public final class NewsTabletScreen extends Screen {
         pose.scale((float) (viewport.scale() * tabletScale), (float) (viewport.scale() * tabletScale), 1.0f);
         for (Tile tile : page.tiles()) {
             ResourceLocation texture = tileTexture(tile);
-            graphics.blit(texture, 0, tile.y(), 0.0f, 0.0f, tile.width(), tile.height(), tile.width(), tile.height());
+            graphics.blit(
+                texture,
+                0,
+                tile.y(),
+                0.0f,
+                0.0f,
+                tile.contentWidth(),
+                tile.contentHeight(),
+                tile.width(),
+                tile.height()
+            );
         }
         pose.popPose();
         graphics.disableScissor();

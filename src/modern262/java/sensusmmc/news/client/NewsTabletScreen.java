@@ -10,17 +10,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import org.joml.Matrix3x2fStack;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.texture.SimpleTexture;
+import net.minecraft.client.renderer.texture.TextureContents;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.metadata.texture.TextureMetadataSection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Util;
 
 import sensusmmc.news.NewsTabletState;
 import sensusmmc.news.SensusNews;
@@ -31,11 +36,11 @@ import sensusmmc.sensuspages.PageViewport;
 import sensusmmc.sensuspages.Tile;
 
 public final class NewsTabletScreen extends Screen {
-    private static final ResourceLocation GUI_TEXTURE =
+    private static final Identifier GUI_TEXTURE =
         ResourceLocations.of(SensusNews.MOD_ID, "textures/gui/gui_newstablet.png");
-    private static final ResourceLocation MANIFEST =
+    private static final Identifier MANIFEST =
         ResourceLocations.of(SensusNews.MOD_ID, "pages/manifest.json");
-    private static final Set<ResourceLocation> REGISTERED = new HashSet<ResourceLocation>();
+    private static final Set<Identifier> REGISTERED = new HashSet<Identifier>();
     private static final int GUI_WIDTH = 212;
     private static final int GUI_HEIGHT = 251;
     private static final int CONTENT_X = 6;
@@ -70,19 +75,19 @@ public final class NewsTabletScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(graphics, mouseX, mouseY, partialTick);
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(left, top, 0.0);
-        pose.scale((float) tabletScale, (float) tabletScale, 1.0f);
-        graphics.blit(GUI_TEXTURE, 0, 0, 0.0f, 0.0f, GUI_WIDTH, GUI_HEIGHT, GUI_WIDTH, GUI_HEIGHT);
-        pose.popPose();
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        extractBackground(graphics, mouseX, mouseY, partialTick);
+        Matrix3x2fStack pose = graphics.pose();
+        pose.pushMatrix();
+        pose.translate((float) left, (float) top);
+        pose.scale((float) tabletScale, (float) tabletScale);
+        graphics.blit(GUI_TEXTURE, 0, 0, GUI_WIDTH, GUI_HEIGHT, 0.0f, 1.0f, 0.0f, 1.0f);
+        pose.popMatrix();
         drawPage(graphics);
         if (page == null) {
             int textX = left + (int) Math.round(CONTENT_X * tabletScale) + 8;
             int textY = top + (int) Math.round(CONTENT_Y * tabletScale) + 8;
-            graphics.drawString(font, "News pages unavailable", textX, textY, 0xFFFF5555, false);
+            graphics.text(font, "News pages unavailable", textX, textY, 0xFFFF5555, false);
         }
     }
 
@@ -96,14 +101,14 @@ public final class NewsTabletScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button != 0 || page == null || manifest == null) {
-            return super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (event.button() != 0 || page == null || manifest == null) {
+            return super.mouseClicked(event, doubleClick);
         }
-        double contentX = (mouseX - (left + CONTENT_X * tabletScale)) / tabletScale;
-        double contentY = (mouseY - (top + CONTENT_Y * tabletScale)) / tabletScale;
+        double contentX = (event.x() - (left + CONTENT_X * tabletScale)) / tabletScale;
+        double contentY = (event.y() - (top + CONTENT_Y * tabletScale)) / tabletScale;
         if (contentX < 0.0 || contentY < 0.0 || contentX >= CONTENT_WIDTH || contentY >= CONTENT_HEIGHT) {
-            return super.mouseClicked(mouseX, mouseY, button);
+            return super.mouseClicked(event, doubleClick);
         }
         PageLink link = page.linkAt(contentX, contentY, scroll, manifest.viewport().scale());
         if (link == null) return false;
@@ -116,7 +121,8 @@ public final class NewsTabletScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyEvent event) {
+        int keyCode = event.key();
         if (keyCode == InputConstants.KEY_UP) {
             scrollBy(-16.0);
             return true;
@@ -133,7 +139,7 @@ public final class NewsTabletScreen extends Screen {
             scrollBy(CONTENT_HEIGHT * 0.8);
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
@@ -182,7 +188,7 @@ public final class NewsTabletScreen extends Screen {
         }
     }
 
-    private void drawPage(GuiGraphics graphics) {
+    private void drawPage(GuiGraphicsExtractor graphics) {
         if (page == null || manifest == null) return;
         PageViewport viewport = manifest.viewport();
         double maximum = page.scrollMax(viewport);
@@ -197,15 +203,28 @@ public final class NewsTabletScreen extends Screen {
             (int) Math.ceil(contentLeft + contentWidth),
             (int) Math.ceil(contentTop + contentHeight)
         );
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
-        pose.translate(contentLeft, contentTop - scroll * tabletScale, 0.0);
-        pose.scale((float) (viewport.scale() * tabletScale), (float) (viewport.scale() * tabletScale), 1.0f);
+        Matrix3x2fStack pose = graphics.pose();
+        pose.pushMatrix();
+        pose.translate((float) contentLeft, (float) (contentTop - scroll * tabletScale));
+        float pageScale = (float) (viewport.scale() * tabletScale);
+        pose.scale(pageScale, pageScale);
         for (Tile tile : page.tiles()) {
-            ResourceLocation texture = tileTexture(tile);
-            graphics.blit(texture, 0, tile.y(), 0.0f, 0.0f, tile.width(), tile.height(), tile.width(), tile.height());
+            Identifier texture = tileTexture(tile);
+            float u1 = (float) tile.contentWidth() / tile.width();
+            float v1 = (float) tile.contentHeight() / tile.height();
+            graphics.blit(
+                texture,
+                0,
+                tile.y(),
+                tile.contentWidth(),
+                tile.y() + tile.contentHeight(),
+                0.0f,
+                u1,
+                0.0f,
+                v1
+            );
         }
-        pose.popPose();
+        pose.popMatrix();
         graphics.disableScissor();
     }
 
@@ -215,16 +234,14 @@ public final class NewsTabletScreen extends Screen {
         scroll = Math.max(0.0, Math.min(maximum, scroll + amount));
     }
 
-    private void registerTexture(ResourceLocation location, boolean smooth) {
+    private void registerTexture(Identifier location, boolean smooth) {
         TextureManager manager = minecraft.getTextureManager();
         if (REGISTERED.add(location)) {
-            manager.register(location, new SimpleTexture(location));
+            manager.registerAndLoad(location, new FilteredTexture(location, smooth));
         }
-        AbstractTexture texture = manager.getTexture(location);
-        texture.setFilter(smooth, false);
     }
 
-    private static ResourceLocation tileTexture(Tile tile) {
+    private static Identifier tileTexture(Tile tile) {
         return ResourceLocations.of(SensusNews.MOD_ID, "textures/gui/pages/" + tile.file());
     }
 
@@ -236,5 +253,29 @@ public final class NewsTabletScreen extends Screen {
             output.write(buffer, 0, count);
         }
         return new String(output.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    private static final class FilteredTexture extends SimpleTexture {
+        private final boolean smooth;
+
+        FilteredTexture(Identifier location, boolean smooth) {
+            super(location);
+            this.smooth = smooth;
+        }
+
+        @Override
+        public TextureContents loadContents(ResourceManager manager) throws IOException {
+            TextureContents contents = super.loadContents(manager);
+            TextureMetadataSection metadata = contents.metadata();
+            return new TextureContents(
+                contents.image(),
+                new TextureMetadataSection(
+                    smooth,
+                    metadata.clamp(),
+                    metadata.mipmapStrategy(),
+                    metadata.alphaCutoffBias()
+                )
+            );
+        }
     }
 }

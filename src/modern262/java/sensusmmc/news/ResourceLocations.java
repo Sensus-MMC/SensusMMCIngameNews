@@ -1,12 +1,12 @@
 package sensusmmc.news;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public final class ResourceLocations {
     private ResourceLocations() {
     }
 
-    public static ResourceLocation of(String namespace, String path) {
-        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    public static Identifier of(String namespace, String path) {
+        return Identifier.fromNamespaceAndPath(namespace, path);
     }
 }

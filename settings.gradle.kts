@@ -21,9 +21,13 @@ plugins {
 stonecutter {
     create(rootProject) {
         version("1.20.1-forge", "1.20.1")
+        version("1.12.2-forge", "1.12.2")
+        version("1.7.10-forge", "1.7.10")
         version("1.20.1-fabric", "1.20.1")
         version("1.21.1-neoforge", "1.21.1")
         version("1.21.1-fabric", "1.21.1")
+        version("26.2-neoforge", "26.2")
+        version("26.2-fabric", "26.2")
         vcsVersion = "1.20.1-forge"
     }
 }

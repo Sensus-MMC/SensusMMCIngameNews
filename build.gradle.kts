@@ -82,6 +82,18 @@ if (node == "1.20.1-fabric") {
     }
 }
 
+if (node == "1.12.2-forge") {
+    sourceSets.main {
+        resources.srcDir(rootProject.file("src/forge1122/resources"))
+    }
+}
+
+if (node == "1.7.10-forge") {
+    sourceSets.main {
+        resources.srcDir(rootProject.file("src/forge1710/resources"))
+    }
+}
+
 if (node == "1.21.1-fabric") {
     sourceSets.main {
         resources.srcDir(rootProject.file("src/fabric1211/resources"))
@@ -97,12 +109,14 @@ if (node == "1.21.1-neoforge") {
 if (node == "26.2-neoforge") {
     sourceSets.main {
         resources.srcDir(rootProject.file("src/neoforge262/resources"))
+        resources.srcDir(rootProject.file("src/modern262/resources"))
     }
 }
 
 if (node == "26.2-fabric") {
     sourceSets.main {
         resources.srcDir(rootProject.file("src/fabric262/resources"))
+        resources.srcDir(rootProject.file("src/modern262/resources"))
     }
 }
 
@@ -113,7 +127,7 @@ unimined.minecraft {
         "forge" -> minecraftForge {
             loader(
                 when (node) {
-                    "1.7.10-forge" -> "10.13.4.1614"
+                    "1.7.10-forge" -> "10.13.4.1614-1.7.10"
                     "1.12.2-forge" -> "14.23.5.2864"
                     "1.20.1-forge" -> "47.4.28"
                     else -> error("No Forge version for $node")
@@ -133,9 +147,6 @@ unimined.minecraft {
             }
             if (node == "1.21.1-fabric") {
                 accessWidener(rootProject.file("src/fabric1211/resources/sensusmmc.accesswidener"))
-            }
-            if (node == "26.2-fabric") {
-                accessWidener(rootProject.file("src/fabric262/resources/sensusmmc.accesswidener"))
             }
         }
         "neoforge" -> neoForge {

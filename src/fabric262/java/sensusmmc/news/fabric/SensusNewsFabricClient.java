@@ -1,23 +1,21 @@
 package sensusmmc.news.fabric;
 
-import sensusmmc.news.ResourceLocations;
-
 import com.mojang.blaze3d.platform.InputConstants;
+
+import java.net.URI;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.item.ClampedItemPropertyFunction;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import sensusmmc.news.NewsConfig;
 import sensusmmc.news.NewsFeedClient;
@@ -30,6 +28,8 @@ import sensusmmc.sensusnews.NewsFeed;
 import sensusmmc.sensusnews.NewsPost;
 
 public final class SensusNewsFabricClient implements ClientModInitializer {
+    private static final KeyMapping.Category CATEGORY =
+        KeyMapping.Category.register(Identifier.fromNamespaceAndPath(SensusNews.MOD_ID, "news"));
     private static KeyMapping openTablet;
     private static boolean polling;
     private static long nextPoll;
@@ -37,20 +37,15 @@ public final class SensusNewsFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         NewsTabletState.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news-state.json"));
-        TabletClientHooks.setOpener(() -> Minecraft.getInstance().setScreen(new NewsTabletScreen()));
+        TabletClientHooks.setOpener(() -> Minecraft.getInstance().setScreenAndShow(new NewsTabletScreen()));
         if (!NewsConfig.requireTablet()) {
-            openTablet = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+            openTablet = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.sensusmmc.open_tablet",
                 InputConstants.Type.KEYSYM,
                 InputConstants.KEY_N,
-                "key.categories.sensusmmc"
+                CATEGORY
             ));
         }
-        ItemProperties.register(
-            SensusNewsFabric.NEWS_TABLET,
-            ResourceLocations.of(SensusNews.MOD_ID, "unread"),
-            (ClampedItemPropertyFunction) (stack, level, entity, seed) -> NewsTabletState.isUnread() ? 1.0f : 0.0f
-        );
         ClientTickEvents.END_CLIENT_TICK.register(SensusNewsFabricClient::tick);
     }
 
@@ -93,7 +88,7 @@ public final class SensusNewsFabricClient implements ClientModInitializer {
         Style style = Style.EMPTY
             .withColor(ChatFormatting.AQUA)
             .withUnderlined(true)
-            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+            .withClickEvent(new ClickEvent.OpenUrl(URI.create(url)));
         MutableComponent link = Component.literal(url).withStyle(style);
         MutableComponent message = Component.literal("[New Sensus article was posted! ")
             .append(link)

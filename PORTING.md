@@ -2,13 +2,18 @@
 
 ## Built and verified
 
+All eight target nodes build successfully:
+
+- `1.7.10-forge`
+- `1.12.2-forge`
 - `1.20.1-forge`
 - `1.20.1-fabric`
 - `1.21.1-neoforge`
 - `1.21.1-fabric`
+- `26.2-neoforge`
+- `26.2-fabric`
 
-All four nodes pass `build` and `libraryTests`. Each production jar contains the
-shared page tiles, feed, GUI texture, logo, and loader metadata.
+`.\gradlew.bat build` and `.\gradlew.bat libraryTests` pass for all nodes.
 
 ## Shared behaviour
 
@@ -21,41 +26,38 @@ shared page tiles, feed, GUI texture, logo, and loader metadata.
   - `chatNotifications=true` enables the new-article chat message.
   - `pollSeconds=300` and `feedUrl=https://sensusmmc.news/feed.json`.
 - Bundled feed seeds known posts, so the first online check does not spam chat.
+- If `feed.json` is not deployed yet, the client falls back to the site's homepage
+  article list so new articles can still be detected.
 - Chat link text is `[New Sensus article was posted! <url>]`, with the URL clickable.
 - Unread tooltip: `[1 unread article!]` (plural for multiple).
 - The mod logo is a 16x nearest-neighbour upscale of `newstablet_on`.
 
-## Still staged
+## Era notes
 
-### 26.2 NeoForge / Fabric
+### 1.20.1 / 1.21.1
 
-Sources for the 26.2 API generation are staged under `src/modern262`,
-`src/fabric262`, and `src/neoforge262`, but the nodes are not registered in
-`settings.gradle.kts` yet. 26.2 is a large API break:
+The primary target. Uses `GuiGraphics`, `ItemProperties`, animated item models,
+and a registered client keybind.
 
-- `ResourceLocation` became `Identifier`.
-- `GuiGraphics` became `GuiGraphicsExtractor`.
-- Screen input uses `MouseButtonEvent` / `KeyEvent`.
-- `Item.use` returns `InteractionResult`.
-- The old item `overrides` model format was replaced by item-model definitions.
-- Fabric key registration moved to `KeyMappingHelper`.
-- The old `ItemProperties` model predicate API is gone.
+### 1.7.10 / 1.12.2
 
-The ports need their own item-model JSON and a 26.2 model-property strategy before
-they can be enabled.
+The page view uses legacy `GuiScreen` rendering with textured quads. 1.12.2 uses
+an `ItemMeshDefinition` for the read/unread model switch. 1.7.10 uses `IIcon`
+switching and the first frame of the active texture, so its unread icon is static.
 
-### 1.7.10 / 1.12.2 Forge
+### 26.2
 
-These need a separate legacy GUI (GL textured quads, no `GuiGraphics`), legacy
-item rendering (`IIcon` / `ItemMeshDefinition`), `GameRegistry` item registration,
-legacy keybind and chat APIs, and an `mcmod.info` resource.
+The screen uses the `GuiGraphicsExtractor` API, `Identifier`, the new input event
+classes, and an `assets/sensusmmc/items/news_tablet.json` item-model definition.
+The 26.2 item model currently always uses the active texture; the unread tooltip
+and read state still work. This is the remaining visual parity item for 26.2.
 
 ## Build commands
 
 ```text
-.\gradlew.bat :1.20.1-forge:build
-.\gradlew.bat :1.20.1-fabric:build
-.\gradlew.bat :1.21.1-neoforge:build
-.\gradlew.bat :1.21.1-fabric:build
+.\gradlew.bat build
 .\gradlew.bat libraryTests
 ```
+
+The build is configured for one worker to avoid exhausting memory while eight
+Minecraft toolchains are configured in one Gradle build.

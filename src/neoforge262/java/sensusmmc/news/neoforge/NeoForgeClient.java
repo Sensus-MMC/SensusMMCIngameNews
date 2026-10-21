@@ -2,17 +2,16 @@ package sensusmmc.news.neoforge;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
+import java.net.URI;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraft.resources.Identifier;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -29,13 +28,14 @@ import sensusmmc.news.client.TabletClientHooks;
 import sensusmmc.sensusnews.NewsFeed;
 import sensusmmc.sensusnews.NewsPost;
 
-@EventBusSubscriber(modid = SensusNews.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class NeoForgeClient {
+    private static final KeyMapping.Category CATEGORY =
+        KeyMapping.Category.register(Identifier.fromNamespaceAndPath(SensusNews.MOD_ID, "news"));
     private static final KeyMapping OPEN_TABLET = new KeyMapping(
         "key.sensusmmc.open_tablet",
         InputConstants.Type.KEYSYM,
         InputConstants.KEY_N,
-        "key.categories.sensusmmc"
+        CATEGORY
     );
 
     private static boolean polling;
@@ -44,23 +44,16 @@ public final class NeoForgeClient {
     private NeoForgeClient() {
     }
 
-    @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         if (NewsConfig.requireTablet()) return;
         event.register(OPEN_TABLET);
     }
 
-    @SubscribeEvent
     public static void setup(FMLClientSetupEvent event) {
         NewsTabletState.load(FMLPaths.CONFIGDIR.get().resolve("sensusmmc-news-state.json"));
-        event.enqueueWork(() -> {
-            TabletClientHooks.setOpener(() -> Minecraft.getInstance().setScreen(new NewsTabletScreen()));
-            ItemProperties.register(
-                NeoForgeItems.NEWS_TABLET.get(),
-                sensusmmc.news.ResourceLocations.of(SensusNews.MOD_ID, "unread"),
-                (stack, level, entity, seed) -> NewsTabletState.isUnread() ? 1.0f : 0.0f
-            );
-        });
+        event.enqueueWork(() ->
+            TabletClientHooks.setOpener(() -> Minecraft.getInstance().setScreenAndShow(new NewsTabletScreen()))
+        );
         NeoForge.EVENT_BUS.addListener(NeoForgeClient::tick);
     }
 
@@ -104,7 +97,7 @@ public final class NeoForgeClient {
         Style style = Style.EMPTY
             .withColor(ChatFormatting.AQUA)
             .withUnderlined(true)
-            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+            .withClickEvent(new ClickEvent.OpenUrl(URI.create(url)));
         MutableComponent link = Component.literal(url).withStyle(style);
         MutableComponent message = Component.literal("[New Sensus article was posted! ")
             .append(link)

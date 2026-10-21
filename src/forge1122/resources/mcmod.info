@@ -1,0 +1,11 @@
+[
+  {
+    "modid": "sensusmmc",
+    "name": "SensusMMC In-Game News",
+    "description": "Read SensusMMC articles in-game on the News Tablet.",
+    "version": "0.1.0",
+    "mcversion": "1.12.2",
+    "authorList": ["SensusMMC"],
+    "logoFile": "logo.png"
+  }
+]
