@@ -74,6 +74,11 @@ Eight nodes. All must compile and produce a runnable client jar.
 | `26.2-neoforge` | NeoForge 26.2.x | 25 | Item-model `select`/component era; APIs unverified (Phase 0) |
 | `26.2-fabric` | Fabric Loader + API | 25 | |
 
+All eight nodes compile regardless of what is installed. The **browser feature at
+runtime additionally requires a Chromium-family browser on the same desktop**;
+see §6.9 for the platform matrix and the caveats that come with it (Windows 7/8.1,
+Snap/Flatpak, enterprise policies).
+
 Toolchain assumption: **Gradle 9.5.1**, **Stonecutter 0.9.8**, **Unimined
 1.4.2-SNAPSHOT** (26.x support only exists in snapshots). Every node is built by
 one Gradle invocation, so Gradle must itself run on a JDK that can host all
@@ -315,6 +320,11 @@ surfaces.
   `GL_LINEAR_MIPMAP_LINEAR` minification with mipmaps regenerated on upload, to
   avoid shimmer during scroll; if mipmap cost shows up in profiling, fall back to
   `GL_LINEAR` (the 4× supersample already reduces aliasing).
+- **NPOT caveat (1.7.10):** 800×956 is not a power of two, and mipmapped NPOT
+  textures are not guaranteed on GL 2.1-era hardware/drivers. Allocate a
+  1024×1024 (or 1024×512) power-of-two texture and upload the frame into a
+  sub-rect, or skip mipmaps entirely and use `GL_LINEAR` + clamp. This is decided
+  per bridge, not in the library.
 - First paint: draw a "Loading SensusMMC…" placeholder inside the screen until
   the first frame arrives, then cross-fade for ~150 ms.
 
@@ -369,12 +379,126 @@ surfaces.
 
 ### 6.8 Performance budget
 
-- Chromium child: ~120–250 MB RSS, plus ~2–6 % CPU on the animated homepage.
-- PNG decode of 800×956: ~5–12 ms per frame on a modern CPU; at the ack-limited
-  rate this is ≤ 20 fps worst case and 0 fps on a static page.
-- Texture upload: one 3 MB `glTexSubImage2D` per new frame (~1–2 ms).
-- The browser process is stopped 90 s after closing the tablet, so idle cost is
-  zero. Polling for new articles costs one small HTTP request per 5 minutes.
+Expectations to validate in Phase 1 (numbers are ranges, not commitments):
+
+| Scenario | Frames | CPU (one core) | Extra RSS | Latency |
+|---|---|---|---|---|
+| Tablet closed / 90 s after close | 0 | 0 % (browser reaped) | 0 | — |
+| Static article, no input | ~0 fps (screencast is change-driven) | < 1 % | 120–200 MB | — |
+| Homepage with Voronoi canvas | capped 15–20 fps | 10–25 % | 200–300 MB | 40–150 ms input→paint |
+| Cold open (page load) | — | spike | — | 0.6–1.5 s |
+| Warm reopen (< 90 s) | — | — | — | < 150 ms |
+
+Per-frame cost at 800×956: Chromium paint + PNG encode ~5–15 ms, base64/WebSocket
+~2–5 ms, decode ~5–15 ms, GPU upload ~1–3 ms. The ack-driven loop is the throttle:
+if the game cannot keep up, frames are simply dropped, so the game stutters less
+but the page looks choppier.
+
+Low-end profile (config): `cssViewportWidth` 200–320, `deviceScaleFactor` 1,
+frame cap 10 fps, no mipmaps. That cuts the frame to ~0.2–0.8 MB and makes text
+softer, trading the "no pixelation" goal for playability.
+
+Known limits:
+
+- The Voronoi background animates forever, so the homepage is never a "static
+  page" while the tablet is open. Closing the tablet is the only way to reach 0 %.
+- 1.7.10-era integrated GPUs and GL 2.1 drivers are the worst case: NPOT texture
+  handling (above), slow `glTexSubImage2D` on unified memory, and 30 fps client
+  rendering leave little headroom.
+- 4 GB RAM machines (common with 1.7.10) will feel the extra 150–300 MB.
+- Java 8 vs 25 does not materially change the costs; the browser does the work.
+
+### 6.9 Platform and JDK coverage (honest version)
+
+**The feature requires a Chromium-family browser (`msedge`, `chrome`,
+`chromium`, Brave) on the same desktop.** There is no fallback renderer in v1, so
+"works on all platforms" really means "works on all desktops that have one of
+those browsers".
+
+| Platform | Works? | Caveats |
+|---|---|---|
+| Windows 10/11 x64/ARM64 | ✅ out of the box | Edge is preinstalled; Chrome/Chromium also detected |
+| Windows 7 / 8.1 | ⚠️ with limits | Last Chromium is v109; no `--headless=new`, so the legacy `--headless` path must be implemented and tested. Edge is often absent. Still relevant for 1.7.10 players |
+| macOS 11+ (Intel/Apple Silicon) | ✅ | Chrome/Edge/Chromium; headless needs no display and does not touch the GLFW main thread |
+| macOS 10.13–10.15 | ⚠️ | Browser version is frozen by the OS; legacy headless path |
+| Linux X11/Wayland (deb/rpm) | ✅ | Distro `chromium`/`google-chrome` works |
+| Linux Snap/Flatpak | ⚠️ | Confinement may block the profile path under `~/.minecraft` or the loopback debugging port; must be detected and explained |
+| Steam Deck | ⚠️ | Needs a browser installed (Chrome/Chromium flatpak); same confinement caveats |
+| Android/iOS/ChromeOS | ❌ | No desktop Java, no child process; out of scope |
+
+| JDK | Works? | Notes |
+|---|---|---|
+| 8 (1.7.10, 1.12.2) | ✅ | `ProcessBuilder`, `Socket`, `java.util.Base64`, `ImageIO` are all Java 8 APIs. No `java.net.http`; the CDP client is hand-written |
+| 8u261+ | ✅ TLS 1.3 | Older 8u uses TLS 1.2, which the site still serves; polling works |
+| 17 / 21 | ✅ | Used by 1.20.1 / 1.21.1 |
+| 25 | ✅ | Required by 26.2; class-file 52 libraries load fine |
+
+There is **no JNI, no `sun.*` API, no AWT window, and no JDK-specific code path**
+— the same library jars run on all four JDKs. The failure modes are OS/browser
+policy, not Java version.
+
+Additional blockers worth detecting explicitly (each gets a clear error panel):
+
+- Enterprise policy `RemoteDebuggingAllowed=false` (Chrome/Edge) or a locked-down
+  profile — the browser exits with an error, the mod must say so rather than hang.
+- Antivirus/EDR terminating a browser launched with a debugging port.
+- An existing browser instance locking the profile (mitigated by a dedicated
+  profile).
+- A browser that starts but never prints `DevTools listening on ...` (timeout).
+
+### 6.10 Trust, privacy and "does this look shady?"
+
+Yes — this is the weakest part of the design from a player-trust perspective, and
+it should be treated as a product constraint, not hand-waved.
+
+**What the mod actually does**
+
+- Finds an already-installed, signed browser and starts it as a child process.
+- Gives it a dedicated profile under `config/sensusmmc/browser-profile`, so it
+  never sees the player's normal cookies, history, passwords or extensions.
+- Talks to it over a random loopback-only port, for as long as the tablet is
+  open (plus 90 s).
+- Loads exactly one origin: `sensusmmc.news`. Every other link is handed to the
+  system browser.
+- Downloads and installs nothing.
+
+**What it does not do**
+
+- No access to the user's real browser profile, no extension installation, no
+  binary download, no telemetry, no reading of game/server data.
+- No data sent anywhere except the site the player asked to read.
+
+**Why it still looks suspicious**
+
+- "Minecraft mod spawns Chrome with `--remote-debugging-port`" is literally a
+  technique used by infostealers. EDR/AV products alert on it, and managed
+  machines may block it.
+- A local process could attach to the debug port while the tablet is open. It
+  would only reach a throwaway profile and a public page, and any attacker with
+  local code execution can do worse, but it is still an unnecessary surface.
+- Mod distribution platforms review process execution harshly. Modrinth/CurseForge
+  may require disclosure or reject it; some server anticheats scan child
+  processes.
+
+**Mitigations (all cheap, all recommended)**
+
+- First-run confirmation screen: one paragraph, "uses your installed browser in a
+  separate profile, connects only to sensusmmc.news", with an opt-out.
+- A status line in the tablet ("Local browser: Edge 141, private profile") so the
+  mechanism is visible, not hidden.
+- Config switch `browserEnabled: false` and a documented "this mod starts a
+  browser" line in the description.
+- No port reuse, no fixed port, no remote debugging outside the session, no
+  `--no-sandbox`.
+- Open source, reproducible builds, no obfuscation.
+- If the trust cost is unacceptable, the only alternatives are a bundled CEF
+  (much larger, downloads natives, macOS thread problems) or a native re-render
+  (not exact). There is no free lunch for "render the real site".
+
+A pipe-based CDP transport (`--remote-debugging-pipe`) would remove the listening
+port and the AV signature, but Java's `ProcessBuilder` cannot pass the extra file
+descriptors Chromium expects, so it is not viable without a native helper.
+
 
 ---
 
@@ -669,6 +793,11 @@ Creative-tab inclusion is independent of the recipe.
 | R9 | Mixed Gson/Netty versions across MC versions | Class conflicts | Zero third-party dependencies; own JSON and WebSocket code |
 | R10 | Legibility at 200×239 | UX | 4× supersample, configurable viewport, Phase 1 tuning on real hardware; optional zoom later |
 | R11 | No `gh` CLI in this environment | Release automation | Use git + Actions UI for now; install `gh` later |
+| R12 | AV/EDR flags a browser launched with a debugging port | Game-side failure, user alarm | Disclose in mod description, first-run opt-in, dedicated profile, loopback-only ephemeral port, clear error panel |
+| R13 | Enterprise policy blocks remote debugging, or Snap/Flatpak confinement blocks the profile/port | Feature unavailable on managed/Linux setups | Detect and explain; document distro-package preference; allow `browserPath` override |
+| R14 | Windows 7/8.1 or macOS 10.13–10.15 only have Chromium ≤109 | `--headless=new` unsupported | Implement the legacy `--headless` screencast path and test it on both |
+| R15 | Modrinth/CurseForge or server anticheats object to process execution | Distribution blocked | Full disclosure, source availability, no downloads, opt-in; fall back to a non-browser UI only if the platform rejects the design |
+| R16 | Mipmapped NPOT 800×956 textures on GL 2.1 hardware | Black/incomplete texture on 1.7.10 | Power-of-two 1024×1024 texture + sub-rect upload, or no mipmaps on legacy nodes |
 
 ---
 
