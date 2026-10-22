@@ -64,7 +64,7 @@ public final class NewsConfig {
 
     private static String parseFeedUrl(String value) {
         String trimmed = value == null ? "" : value.trim();
-        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) return trimmed;
+        if (trimmed.startsWith("https://")) return trimmed;
         return DEFAULT_FEED_URL;
     }
 

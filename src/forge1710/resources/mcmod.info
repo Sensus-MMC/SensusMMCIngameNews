@@ -5,7 +5,7 @@
     "description": "Read SensusMMC articles in-game on the News Tablet.",
     "version": "0.1.0",
     "mcversion": "1.7.10",
-    "authorList": ["SensusMMC"],
+    "authorList": ["irislgtm"],
     "logoFile": "logo.png"
   }
 ]

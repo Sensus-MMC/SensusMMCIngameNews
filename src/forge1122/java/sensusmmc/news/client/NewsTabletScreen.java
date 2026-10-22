@@ -109,10 +109,12 @@ public final class NewsTabletScreen extends GuiScreen {
         PageLink link = page.linkAt(contentX, contentY, scroll, manifest.viewport().scale());
         if (link == null) return;
         if (link.external()) {
-            try {
-                Desktop.getDesktop().browse(new URI(link.href()));
-            } catch (Exception error) {
-                error.printStackTrace();
+            if (SensusNews.isAllowedUrl(link.href())) {
+                try {
+                    Desktop.getDesktop().browse(new URI(link.href()));
+                } catch (Exception error) {
+                    error.printStackTrace();
+                }
             }
         } else {
             openInternal(link.href());

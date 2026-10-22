@@ -17,7 +17,7 @@ All eight target nodes build successfully:
 
 ## Shared behaviour
 
-- Cropped 200x239 page view inside the 212x251 tablet frame, scaled up slightly.
+- Cropped 307x308 page view inside the 320x320 tablet frame, scaled up slightly.
 - Mouse wheel, keyboard scrolling, internal page links, and external links.
 - Persistent known/read state in `config/sensusmmc-news-state.json`.
 - Config in `config/sensusmmc-news.properties`:

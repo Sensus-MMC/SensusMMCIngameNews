@@ -6,6 +6,7 @@ license="All Rights Reserved"
 modId="sensusmmc"
 version="0.1.0"
 displayName="SensusMMC In-Game News"
+authors="irislgtm"
 description="Read SensusMMC articles in-game on the News Tablet."
 logoFile="logo.png"
 

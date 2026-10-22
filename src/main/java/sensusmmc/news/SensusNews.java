@@ -6,4 +6,8 @@ public final class SensusNews {
 
     private SensusNews() {
     }
+
+    public static boolean isAllowedUrl(String url) {
+        return url != null && url.startsWith("https://");
+    }
 }

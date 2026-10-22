@@ -113,7 +113,9 @@ public final class NewsTabletScreen extends Screen {
         PageLink link = page.linkAt(contentX, contentY, scroll, manifest.viewport().scale());
         if (link == null) return false;
         if (link.external()) {
-            Util.getPlatform().openUri(link.href());
+            if (SensusNews.isAllowedUrl(link.href())) {
+                Util.getPlatform().openUri(link.href());
+            }
         } else {
             openInternal(link.href());
         }

@@ -22,6 +22,7 @@ public final class NewsFeedClient {
         void onFailure(Throwable error);
     }
 
+    private static final int MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
     private static final Pattern ENTRY = Pattern.compile("<div class=\"article-entry\">");
     private static final Pattern ARTICLE_LINK = Pattern.compile("<a[^>]+href=\"([^\"]*/articles/[^\"]+)\"[^>]*>(.*?)</a>", Pattern.DOTALL);
     private static final Pattern TIME = Pattern.compile("<time[^>]+datetime=\"([^\"]+)\"");
@@ -46,12 +47,14 @@ public final class NewsFeedClient {
 
     public static String absoluteUrl(String url) {
         if (url == null || url.isEmpty()) return SensusNews.SITE_URL;
-        if (url.startsWith("http://") || url.startsWith("https://")) return url;
+        if (url.startsWith("https://")) return url;
+        if (url.startsWith("http://")) return "https://" + url.substring(7);
         if (url.startsWith("/")) return SensusNews.SITE_URL + url;
         return SensusNews.SITE_URL + "/" + url;
     }
 
     private static NewsFeed fetch(String url) throws IOException {
+        if (!SensusNews.isAllowedUrl(url)) throw new IOException("Feed URL must use HTTPS");
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         try {
             connection.setRequestMethod("GET");
@@ -61,6 +64,7 @@ public final class NewsFeedClient {
             connection.setRequestProperty("Accept", "application/json, text/html");
             connection.setRequestProperty("User-Agent", "SensusMMC-Ingame-News/0.1");
             int status = connection.getResponseCode();
+            requireHttps(connection);
             if (status == 404) {
                 return fetchFromSite();
             }
@@ -85,6 +89,7 @@ public final class NewsFeedClient {
             connection.setRequestProperty("Accept", "text/html");
             connection.setRequestProperty("User-Agent", "SensusMMC-Ingame-News/0.1");
             int status = connection.getResponseCode();
+            requireHttps(connection);
             if (status < 200 || status >= 300) {
                 throw new IOException("Site returned HTTP " + status);
             }
@@ -144,11 +149,20 @@ public final class NewsFeedClient {
             .trim();
     }
 
+    private static void requireHttps(HttpURLConnection connection) throws IOException {
+        if (!"https".equalsIgnoreCase(connection.getURL().getProtocol())) {
+            throw new IOException("Feed URL must use HTTPS");
+        }
+    }
+
     private static String read(InputStream input) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         byte[] buffer = new byte[8192];
         int count;
         while ((count = input.read(buffer)) >= 0) {
+            if (output.size() + count > MAX_RESPONSE_BYTES) {
+                throw new IOException("Feed response too large");
+            }
             output.write(buffer, 0, count);
         }
         return new String(output.toByteArray(), StandardCharsets.UTF_8);
