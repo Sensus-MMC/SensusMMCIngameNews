@@ -32,12 +32,12 @@ public final class NewsTabletScreen extends GuiScreen {
         new ResourceLocation(SensusNews.MOD_ID, "textures/gui/gui_newstablet.png");
     private static final ResourceLocation MANIFEST =
         new ResourceLocation(SensusNews.MOD_ID, "pages/manifest.json");
-    private static final int GUI_WIDTH = 212;
-    private static final int GUI_HEIGHT = 251;
+    private static final int GUI_WIDTH = 320;
+    private static final int GUI_HEIGHT = 320;
     private static final int CONTENT_X = 8;
     private static final int CONTENT_Y = 6;
-    private static final int CONTENT_WIDTH = 200;
-    private static final int CONTENT_HEIGHT = 239;
+    private static final int CONTENT_WIDTH = 305;
+    private static final int CONTENT_HEIGHT = 308;
 
     private PageManifest manifest;
     private Page page;

@@ -36,12 +36,12 @@ public final class NewsTabletScreen extends Screen {
     private static final ResourceLocation MANIFEST =
         ResourceLocations.of(SensusNews.MOD_ID, "pages/manifest.json");
     private static final Set<ResourceLocation> REGISTERED = new HashSet<ResourceLocation>();
-    private static final int GUI_WIDTH = 212;
-    private static final int GUI_HEIGHT = 251;
+    private static final int GUI_WIDTH = 320;
+    private static final int GUI_HEIGHT = 320;
     private static final int CONTENT_X = 8;
     private static final int CONTENT_Y = 6;
-    private static final int CONTENT_WIDTH = 200;
-    private static final int CONTENT_HEIGHT = 239;
+    private static final int CONTENT_WIDTH = 305;
+    private static final int CONTENT_HEIGHT = 308;
 
     private PageManifest manifest;
     private Page page;

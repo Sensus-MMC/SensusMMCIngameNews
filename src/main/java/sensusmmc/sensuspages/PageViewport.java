@@ -6,11 +6,11 @@ import java.util.Map;
 import sensusmmc.sensuspages.json.Json;
 
 public final class PageViewport {
-    public static final int CONTENT_WIDTH = 200;
-    public static final int CONTENT_HEIGHT = 239;
-    public static final int CAPTURE_CSS_WIDTH = 400;
-    public static final int CAPTURE_CSS_HEIGHT = 478;
-    public static final int CAPTURE_DPR = 2;
+    public static final int CONTENT_WIDTH = 305;
+    public static final int CONTENT_HEIGHT = 308;
+    public static final int CAPTURE_CSS_WIDTH = 610;
+    public static final int CAPTURE_CSS_HEIGHT = 616;
+    public static final int CAPTURE_DPR = 3;
 
     private final int cssWidth;
     private final int cssHeight;

@@ -15,9 +15,10 @@ const base = cli.base || 'https://sensusmmc.news/';
 const outDir = path.resolve(cli.out || 'out/site');
 const maxArticles = Number(cli['max-articles'] ?? 2);
 const extraPaths = String(cli.extras ?? '/about').split(',').map((value) => value.trim()).filter(Boolean);
-const viewport = { width: 400, height: 478 };
-const dpr = 2;
-const tileSize = 1024;
+const viewport = { width: 610, height: 616 };
+const dpr = 3;
+const tileSize = 2048;
+const contentWidth = 305;
 const sourceWidth = viewport.width * dpr;
 const sourceHeight = viewport.height * dpr;
 
@@ -94,7 +95,7 @@ async function waitForContent(page) {
 }
 
 async function readFeed(page, origin) {
-  return page.evaluate((pageOrigin) => {
+  return page.evaluate(({ pageOrigin, scaleFactor }) => {
     const text = (element, selector) => element.querySelector(selector)?.textContent?.trim() || '';
     const absolute = (value) => {
       if (!value) return '';
@@ -120,11 +121,11 @@ async function readFeed(page, origin) {
         origin: pageOrigin
       };
     });
-  }, origin);
+  }, { pageOrigin: origin, scaleFactor: dpr });
 }
 
 async function readLinks(page, origin) {
-  return page.evaluate((pageOrigin) => {
+  return page.evaluate(({ pageOrigin, scaleFactor }) => {
     const seen = new Set();
     return Array.from(document.querySelectorAll('a[href]'))
       .map((anchor) => {
@@ -142,17 +143,17 @@ async function readLinks(page, origin) {
         if (seen.has(key)) return null;
         seen.add(key);
         return {
-          x: Math.round((rect.left + window.scrollX) * 2),
-          y: Math.round((rect.top + window.scrollY) * 2),
-          width: Math.round(rect.width * 2),
-          height: Math.round(rect.height * 2),
+          x: Math.round((rect.left + window.scrollX) * scaleFactor),
+          y: Math.round((rect.top + window.scrollY) * scaleFactor),
+          width: Math.round(rect.width * scaleFactor),
+          height: Math.round(rect.height * scaleFactor),
           href,
           external: url.origin !== pageOrigin,
           text: (anchor.textContent || '').trim().slice(0, 160)
         };
       })
       .filter((link) => link && link.width > 0 && link.height > 0);
-  }, origin);
+  }, { pageOrigin: origin, scaleFactor: dpr });
 }
 
 function cropTile(image, tileY) {
@@ -302,7 +303,7 @@ async function main() {
         dpr,
         sourceWidth,
         sourceHeight,
-        scale: 0.25
+        scale: contentWidth / sourceWidth
       },
       fonts: { georgia: true, arial: true },
       pages
