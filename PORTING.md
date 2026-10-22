@@ -28,6 +28,9 @@ All eight target nodes build successfully:
 - Bundled feed seeds known posts, so the first online check does not spam chat.
 - If `feed.json` is not deployed yet, the client falls back to the site's homepage
   article list so new articles can still be detected.
+- Network calls are HTTPS-only, external links are restricted to HTTPS, and feed
+  responses are capped at 8 MB.
+- Author metadata: `irislgtm`.
 - Chat link text is `[New Sensus article was posted! <url>]`, with the URL clickable.
 - Unread tooltip: `[1 unread article!]` (plural for multiple).
 - The mod logo is a 16x nearest-neighbour upscale of `newstablet_on`.
