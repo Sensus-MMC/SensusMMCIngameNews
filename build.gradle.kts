@@ -204,5 +204,4 @@ tasks.register<JavaExec>("libraryTests") {
     classpath = sourceSets["test"].runtimeClasspath
     mainClass.set("sensusmmc.test.LibraryTests")
     workingDir = rootProject.projectDir
-    args("site-tools/out/site")
 }

@@ -1,9 +1,9 @@
-package sensusmmc.sensuspages;
+package sensusmmc.news.page;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import sensusmmc.sensuspages.json.Json;
+import sensusmmc.news.page.json.Json;
 
 public final class Tile {
     private final String file;

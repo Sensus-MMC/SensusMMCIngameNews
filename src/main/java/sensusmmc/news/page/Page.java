@@ -1,4 +1,4 @@
-package sensusmmc.sensuspages;
+package sensusmmc.news.page;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import sensusmmc.sensuspages.json.Json;
+import sensusmmc.news.page.json.Json;
 
 public final class Page {
     private final String id;

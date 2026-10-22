@@ -5,14 +5,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import sensusmmc.sensusnews.NewsFeed;
-import sensusmmc.sensusnews.NewsPost;
-import sensusmmc.sensusnews.NewsState;
-import sensusmmc.sensuspages.Page;
-import sensusmmc.sensuspages.PageLink;
-import sensusmmc.sensuspages.PageManifest;
-import sensusmmc.sensuspages.PageViewport;
-import sensusmmc.sensuspages.Tile;
+import sensusmmc.news.feed.NewsFeed;
+import sensusmmc.news.feed.NewsPost;
+import sensusmmc.news.feed.NewsState;
+import sensusmmc.news.page.Page;
+import sensusmmc.news.page.PageLink;
+import sensusmmc.news.page.PageManifest;
+import sensusmmc.news.page.PageViewport;
+import sensusmmc.news.page.Tile;
 
 public final class LibraryTests {
     private static final PageViewport VIEWPORT = PageViewport.standard();
@@ -28,12 +28,12 @@ public final class LibraryTests {
 
     private static void json() {
         String source = "{\"text\":\"a\\\"b\\n\",\"count\":3,\"ratio\":0.25,\"flag\":true,\"none\":null,\"items\":[1,2]}";
-        Object parsed = sensusmmc.sensuspages.json.Json.parse(source);
-        String written = sensusmmc.sensuspages.json.Json.write(parsed);
+        Object parsed = sensusmmc.news.page.json.Json.parse(source);
+        String written = sensusmmc.news.page.json.Json.write(parsed);
         check(written.contains("\"text\":\"a\\\"b\\n\""), "json string round trip");
         check(written.contains("\"ratio\":0.25"), "json decimal");
-        check("missing".equals(sensusmmc.sensuspages.json.Json.string(
-            sensusmmc.sensuspages.json.Json.object(parsed, "root"), "missing", "missing")), "json fallback");
+        check("missing".equals(sensusmmc.news.page.json.Json.string(
+            sensusmmc.news.page.json.Json.object(parsed, "root"), "missing", "missing")), "json fallback");
     }
 
     private static void manifest() {

@@ -1,9 +1,9 @@
-package sensusmmc.sensusnews;
+package sensusmmc.news.feed;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import sensusmmc.sensuspages.json.Json;
+import sensusmmc.news.page.json.Json;
 
 public final class NewsPost {
     private final String id;

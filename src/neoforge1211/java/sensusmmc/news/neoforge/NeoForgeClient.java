@@ -26,8 +26,8 @@ import sensusmmc.news.SensusNews;
 import sensusmmc.news.client.NewsTabletContent;
 import sensusmmc.news.client.NewsTabletScreen;
 import sensusmmc.news.client.TabletClientHooks;
-import sensusmmc.sensusnews.NewsFeed;
-import sensusmmc.sensusnews.NewsPost;
+import sensusmmc.news.feed.NewsFeed;
+import sensusmmc.news.feed.NewsPost;
 
 @EventBusSubscriber(modid = SensusNews.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class NeoForgeClient {

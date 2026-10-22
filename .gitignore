@@ -3,8 +3,8 @@ build/
 run/
 versions/*/build/
 versions/*/run/
-site-tools/node_modules/
-site-tools/out/
+tools/node_modules/
+tools/out/
 *.iml
 .idea/
 hs_err_pid*.log

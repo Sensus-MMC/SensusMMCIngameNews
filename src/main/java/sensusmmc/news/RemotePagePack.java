@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import sensusmmc.sensuspages.Page;
-import sensusmmc.sensuspages.PageManifest;
-import sensusmmc.sensuspages.Tile;
+import sensusmmc.news.page.Page;
+import sensusmmc.news.page.PageManifest;
+import sensusmmc.news.page.Tile;
 
 public final class RemotePagePack {
     private static final int MAX_MANIFEST_BYTES = 8 * 1024 * 1024;
@@ -37,10 +37,6 @@ public final class RemotePagePack {
         synchronized (LOCK) {
             return TILES.get(file);
         }
-    }
-
-    public static boolean hasManifest() {
-        return manifest != null;
     }
 
     public static void refreshIfStale() {

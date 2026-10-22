@@ -13,7 +13,7 @@ import net.minecraft.server.packs.resources.Resource;
 
 import sensusmmc.news.NewsTabletState;
 import sensusmmc.news.SensusNews;
-import sensusmmc.sensusnews.NewsFeed;
+import sensusmmc.news.feed.NewsFeed;
 
 public final class NewsTabletContent {
     private static final Identifier BUNDLED_FEED =

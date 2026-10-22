@@ -1,4 +1,4 @@
-package sensusmmc.sensusnews;
+package sensusmmc.news.feed;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import sensusmmc.sensuspages.json.Json;
+import sensusmmc.news.page.json.Json;
 
 public final class NewsFeed {
     public static final int SCHEMA = 1;

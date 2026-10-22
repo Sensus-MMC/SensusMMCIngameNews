@@ -1,4 +1,4 @@
-package sensusmmc.sensuspages.json;
+package sensusmmc.news.page.json;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

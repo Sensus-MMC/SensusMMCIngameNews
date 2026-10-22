@@ -18,8 +18,8 @@ import sensusmmc.news.NewsTabletState;
 import sensusmmc.news.client.NewsTabletContent;
 import sensusmmc.news.client.NewsTabletScreen;
 import sensusmmc.news.client.TabletClientHooks;
-import sensusmmc.sensusnews.NewsFeed;
-import sensusmmc.sensusnews.NewsPost;
+import sensusmmc.news.feed.NewsFeed;
+import sensusmmc.news.feed.NewsPost;
 
 public final class ClientProxy extends CommonProxy {
     private static final KeyBinding OPEN_TABLET =

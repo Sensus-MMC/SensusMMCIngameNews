@@ -25,11 +25,11 @@ import net.minecraft.server.packs.resources.Resource;
 import sensusmmc.news.NewsTabletState;
 import sensusmmc.news.RemotePagePack;
 import sensusmmc.news.SensusNews;
-import sensusmmc.sensuspages.Page;
-import sensusmmc.sensuspages.PageLink;
-import sensusmmc.sensuspages.PageManifest;
-import sensusmmc.sensuspages.PageViewport;
-import sensusmmc.sensuspages.Tile;
+import sensusmmc.news.page.Page;
+import sensusmmc.news.page.PageLink;
+import sensusmmc.news.page.PageManifest;
+import sensusmmc.news.page.PageViewport;
+import sensusmmc.news.page.Tile;
 
 public final class NewsTabletScreen extends Screen {
     private static final ResourceLocation GUI_TEXTURE =

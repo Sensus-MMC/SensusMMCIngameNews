@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import sensusmmc.sensusnews.NewsFeed;
-import sensusmmc.sensusnews.NewsPost;
+import sensusmmc.news.feed.NewsFeed;
+import sensusmmc.news.feed.NewsPost;
 
 public final class NewsFeedClient {
     public interface Callback {

@@ -11,7 +11,7 @@ import net.minecraft.util.ResourceLocation;
 
 import sensusmmc.news.NewsTabletState;
 import sensusmmc.news.SensusNews;
-import sensusmmc.sensusnews.NewsFeed;
+import sensusmmc.news.feed.NewsFeed;
 
 public final class NewsTabletContent {
     private static final ResourceLocation BUNDLED_FEED =

@@ -1,9 +1,9 @@
-package sensusmmc.sensuspages;
+package sensusmmc.news.page;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import sensusmmc.sensuspages.json.Json;
+import sensusmmc.news.page.json.Json;
 
 public final class PageViewport {
     public static final int CONTENT_WIDTH = 307;
@@ -75,10 +75,6 @@ public final class PageViewport {
         return scrollGame / scale;
     }
 
-    public double gameY(double source) {
-        return source * scale;
-    }
-
     public double gameX(double source) {
         return source * scale;
     }
@@ -102,24 +98,8 @@ public final class PageViewport {
         }
     }
 
-    public int cssWidth() {
-        return cssWidth;
-    }
-
-    public int cssHeight() {
-        return cssHeight;
-    }
-
-    public int dpr() {
-        return dpr;
-    }
-
     public int sourceWidth() {
         return sourceWidth;
-    }
-
-    public int sourceHeight() {
-        return sourceHeight;
     }
 
     public double scale() {

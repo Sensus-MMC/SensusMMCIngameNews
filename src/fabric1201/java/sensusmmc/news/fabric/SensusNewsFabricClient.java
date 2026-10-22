@@ -26,8 +26,8 @@ import sensusmmc.news.SensusNews;
 import sensusmmc.news.client.NewsTabletContent;
 import sensusmmc.news.client.NewsTabletScreen;
 import sensusmmc.news.client.TabletClientHooks;
-import sensusmmc.sensusnews.NewsFeed;
-import sensusmmc.sensusnews.NewsPost;
+import sensusmmc.news.feed.NewsFeed;
+import sensusmmc.news.feed.NewsPost;
 
 public final class SensusNewsFabricClient implements ClientModInitializer {
     private static KeyMapping openTablet;
@@ -36,7 +36,8 @@ public final class SensusNewsFabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        NewsConfig.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news.properties"));        NewsTabletState.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news-state.json"));
+        NewsConfig.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news.properties"));
+        NewsTabletState.load(FabricLoader.getInstance().getConfigDir().resolve("sensusmmc-news-state.json"));
         TabletClientHooks.setOpener(() -> Minecraft.getInstance().setScreen(new NewsTabletScreen()));
         if (!NewsConfig.requireTablet()) {
             openTablet = KeyBindingHelper.registerKeyBinding(new KeyMapping(

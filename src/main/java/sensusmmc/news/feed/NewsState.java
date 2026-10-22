@@ -1,4 +1,4 @@
-package sensusmmc.sensusnews;
+package sensusmmc.news.feed;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import sensusmmc.sensuspages.json.Json;
+import sensusmmc.news.page.json.Json;
 
 public final class NewsState {
     public static final int SCHEMA = 1;
@@ -70,10 +70,6 @@ public final class NewsState {
         return read.contains(id);
     }
 
-    public boolean isKnown(String id) {
-        return known.contains(id);
-    }
-
     public int unreadCount(NewsFeed feed) {
         int count = 0;
         for (NewsPost post : feed.posts()) {
@@ -92,10 +88,6 @@ public final class NewsState {
 
     public Set<String> known() {
         return Collections.unmodifiableSet(known);
-    }
-
-    public Set<String> read() {
-        return Collections.unmodifiableSet(read);
     }
 
     public String lastCheck() {

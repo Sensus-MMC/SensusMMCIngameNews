@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import sensusmmc.sensusnews.NewsFeed;
-import sensusmmc.sensusnews.NewsPost;
-import sensusmmc.sensusnews.NewsState;
+import sensusmmc.news.feed.NewsFeed;
+import sensusmmc.news.feed.NewsPost;
+import sensusmmc.news.feed.NewsState;
 
 public final class NewsTabletState {
     private static NewsState state = NewsState.empty();
@@ -71,12 +71,6 @@ public final class NewsTabletState {
         save();
     }
 
-    public static synchronized void markRead(String id) {
-        state.markRead(id);
-        if (feed != null) unreadCount = state.unreadCount(feed);
-        save();
-    }
-
     public static synchronized int unreadCount() {
         return unreadCount;
     }
@@ -91,10 +85,6 @@ public final class NewsTabletState {
 
     public static synchronized boolean isKnownEmpty() {
         return state.known().isEmpty();
-    }
-
-    public static synchronized NewsFeed feed() {
-        return feed;
     }
 
     public static final class FeedUpdate {
