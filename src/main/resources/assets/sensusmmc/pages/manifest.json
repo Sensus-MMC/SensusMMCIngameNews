@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "generated": "2026-10-22T10:10:17.088Z",
+  "generated": "2026-10-22T10:45:27.615Z",
   "viewport": {
-    "cssWidth": 610,
-    "cssHeight": 616,
+    "cssWidth": 614,
+    "cssHeight": 416,
     "dpr": 3,
-    "sourceWidth": 1830,
-    "sourceHeight": 1848,
+    "sourceWidth": 1842,
+    "sourceHeight": 1248,
     "scale": 0.16666666666666666
   },
   "fonts": {
@@ -18,10 +18,10 @@
       "id": "home",
       "url": "/",
       "title": "Sensus MMC - Reliable MMC News",
-      "sourceWidth": 1830,
-      "sourceHeight": 1848,
-      "cssWidth": 610,
-      "cssHeight": 616,
+      "sourceWidth": 1842,
+      "sourceHeight": 1536,
+      "cssWidth": 614,
+      "cssHeight": 512,
       "tiles": [
         {
           "file": "home/0000.png",
@@ -29,8 +29,8 @@
           "y": 0,
           "width": 2048,
           "height": 2048,
-          "contentWidth": 1830,
-          "contentHeight": 1848
+          "contentWidth": 1842,
+          "contentHeight": 1536
         }
       ],
       "links": [
@@ -89,7 +89,7 @@
           "text": "Welcome to Sensus MMC"
         },
         {
-          "x": 1366,
+          "x": 1375,
           "y": 1016,
           "width": 187,
           "height": 51,
@@ -103,10 +103,10 @@
       "id": "articles-welcome-to-sensus-mmc",
       "url": "/articles/welcome-to-sensus-mmc",
       "title": "Welcome to Sensus MMC - Sensus MMC",
-      "sourceWidth": 1830,
-      "sourceHeight": 1848,
-      "cssWidth": 610,
-      "cssHeight": 616,
+      "sourceWidth": 1842,
+      "sourceHeight": 1482,
+      "cssWidth": 614,
+      "cssHeight": 494,
       "tiles": [
         {
           "file": "articles-welcome-to-sensus-mmc/0000.png",
@@ -114,8 +114,8 @@
           "y": 0,
           "width": 2048,
           "height": 2048,
-          "contentWidth": 1830,
-          "contentHeight": 1848
+          "contentWidth": 1842,
+          "contentHeight": 1482
         }
       ],
       "links": [
@@ -157,7 +157,7 @@
         },
         {
           "x": 129,
-          "y": 1435,
+          "y": 1351,
           "width": 100,
           "height": 69,
           "href": "/",
@@ -170,9 +170,9 @@
       "id": "about",
       "url": "/about",
       "title": "About - Sensus MMC",
-      "sourceWidth": 1830,
+      "sourceWidth": 1842,
       "sourceHeight": 1881,
-      "cssWidth": 610,
+      "cssWidth": 614,
       "cssHeight": 627,
       "tiles": [
         {
@@ -181,7 +181,7 @@
           "y": 0,
           "width": 2048,
           "height": 2048,
-          "contentWidth": 1830,
+          "contentWidth": 1842,
           "contentHeight": 1881
         }
       ],

@@ -15,10 +15,10 @@ const base = cli.base || 'https://sensusmmc.news/';
 const outDir = path.resolve(cli.out || 'out/site');
 const maxArticles = Number(cli['max-articles'] ?? 2);
 const extraPaths = String(cli.extras ?? '/about').split(',').map((value) => value.trim()).filter(Boolean);
-const viewport = { width: 610, height: 616 };
+const viewport = { width: 614, height: 416 };
 const dpr = 3;
 const tileSize = 2048;
-const contentWidth = 305;
+const contentWidth = 307;
 const sourceWidth = viewport.width * dpr;
 const sourceHeight = viewport.height * dpr;
 

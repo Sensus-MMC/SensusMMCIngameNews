@@ -38,10 +38,10 @@ public final class NewsTabletScreen extends Screen {
     private static final Set<ResourceLocation> REGISTERED = new HashSet<ResourceLocation>();
     private static final int GUI_WIDTH = 320;
     private static final int GUI_HEIGHT = 320;
-    private static final int CONTENT_X = 8;
+    private static final int CONTENT_X = 6;
     private static final int CONTENT_Y = 6;
-    private static final int CONTENT_WIDTH = 305;
-    private static final int CONTENT_HEIGHT = 308;
+    private static final int CONTENT_WIDTH = 307;
+    private static final int CONTENT_HEIGHT = 208;
 
     private PageManifest manifest;
     private Page page;
