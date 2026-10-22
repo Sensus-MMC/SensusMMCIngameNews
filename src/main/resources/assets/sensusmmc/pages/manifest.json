@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "generated": "2026-10-22T10:45:27.615Z",
+  "generated": "2026-10-22T11:01:56.983Z",
   "viewport": {
     "cssWidth": 614,
-    "cssHeight": 416,
+    "cssHeight": 616,
     "dpr": 3,
     "sourceWidth": 1842,
-    "sourceHeight": 1248,
+    "sourceHeight": 1848,
     "scale": 0.16666666666666666
   },
   "fonts": {
@@ -19,9 +19,9 @@
       "url": "/",
       "title": "Sensus MMC - Reliable MMC News",
       "sourceWidth": 1842,
-      "sourceHeight": 1536,
+      "sourceHeight": 1848,
       "cssWidth": 614,
-      "cssHeight": 512,
+      "cssHeight": 616,
       "tiles": [
         {
           "file": "home/0000.png",
@@ -30,7 +30,7 @@
           "width": 2048,
           "height": 2048,
           "contentWidth": 1842,
-          "contentHeight": 1536
+          "contentHeight": 1848
         }
       ],
       "links": [
@@ -104,9 +104,9 @@
       "url": "/articles/welcome-to-sensus-mmc",
       "title": "Welcome to Sensus MMC - Sensus MMC",
       "sourceWidth": 1842,
-      "sourceHeight": 1482,
+      "sourceHeight": 1848,
       "cssWidth": 614,
-      "cssHeight": 494,
+      "cssHeight": 616,
       "tiles": [
         {
           "file": "articles-welcome-to-sensus-mmc/0000.png",
@@ -115,7 +115,7 @@
           "width": 2048,
           "height": 2048,
           "contentWidth": 1842,
-          "contentHeight": 1482
+          "contentHeight": 1848
         }
       ],
       "links": [

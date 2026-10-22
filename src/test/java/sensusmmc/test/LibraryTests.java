@@ -39,23 +39,23 @@ public final class LibraryTests {
     private static void manifest() {
         String source =
             "{\"schema\":1,\"generated\":\"2026-10-22T00:00:00Z\",\"viewport\":{" +
-            "\"cssWidth\":614,\"cssHeight\":416,\"dpr\":3,\"sourceWidth\":1842,\"sourceHeight\":1248,\"scale\":0.16666666666666666}," +
-            "\"pages\":[{\"id\":\"home\",\"url\":\"/\",\"title\":\"Home\",\"sourceWidth\":1842,\"sourceHeight\":2496," +
+            "\"cssWidth\":614,\"cssHeight\":616,\"dpr\":3,\"sourceWidth\":1842,\"sourceHeight\":1848,\"scale\":0.16666666666666666}," +
+            "\"pages\":[{\"id\":\"home\",\"url\":\"/\",\"title\":\"Home\",\"sourceWidth\":1842,\"sourceHeight\":3696," +
             "\"tiles\":[" +
             "{\"file\":\"home/0000.png\",\"x\":0,\"y\":0,\"width\":2048,\"height\":2048,\"contentWidth\":1842,\"contentHeight\":2048}," +
-            "{\"file\":\"home/0001.png\",\"x\":0,\"y\":2048,\"width\":2048,\"height\":2048,\"contentWidth\":1842,\"contentHeight\":448}]," +
+            "{\"file\":\"home/0001.png\",\"x\":0,\"y\":2048,\"width\":2048,\"height\":2048,\"contentWidth\":1842,\"contentHeight\":1648}]," +
             "\"links\":[{\"x\":0,\"y\":0,\"width\":600,\"height\":300,\"href\":\"/about\",\"external\":false,\"text\":\"About\"}]}]}";
         PageManifest manifest = PageManifest.fromJson(source);
         check(manifest.pages().size() == 1, "manifest page count");
         check(manifest.page("home") != null, "manifest page lookup");
         Page page = manifest.page("home");
-        check(page.gameHeight(VIEWPORT.scale()) == 416, "page game height");
-        check(page.scrollMax(VIEWPORT) == 208, "scroll max");
+        check(page.gameHeight(VIEWPORT.scale()) == 616, "page game height");
+        check(page.scrollMax(VIEWPORT) == 308, "scroll max");
         PageLink link = page.links().get(0);
         check(link.contains(10.0, 20.0, 0.0, VIEWPORT.scale()), "link hit");
         check(!link.contains(10.0, 60.0, 0.0, VIEWPORT.scale()), "link miss");
         PageManifest roundTrip = PageManifest.fromJson(manifest.toJson());
-        check(roundTrip.page("home").sourceHeight() == 2496, "manifest round trip");
+        check(roundTrip.page("home").sourceHeight() == 3696, "manifest round trip");
         check(Tile.isSafePath("home/0000.png"), "safe path");
         check(!Tile.isSafePath("../home/0000.png"), "unsafe parent path");
         check(!Tile.isSafePath("home\\0000.png"), "unsafe backslash path");
@@ -63,7 +63,7 @@ public final class LibraryTests {
 
     private static void geometry() {
         check(VIEWPORT.gameWidth() == 307, "game width");
-        check(VIEWPORT.gameHeight() == 208, "game height");
+        check(VIEWPORT.gameHeight() == 308, "game height");
         check(VIEWPORT.sourceY(0.0) == 0.0, "source top");
         check(VIEWPORT.sourceY(10.0) == 60.0, "source scroll");
         check(VIEWPORT.gameX(1842.0) == 307.0, "game x");

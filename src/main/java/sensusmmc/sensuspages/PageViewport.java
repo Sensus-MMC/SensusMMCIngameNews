@@ -7,9 +7,9 @@ import sensusmmc.sensuspages.json.Json;
 
 public final class PageViewport {
     public static final int CONTENT_WIDTH = 307;
-    public static final int CONTENT_HEIGHT = 208;
+    public static final int CONTENT_HEIGHT = 308;
     public static final int CAPTURE_CSS_WIDTH = 614;
-    public static final int CAPTURE_CSS_HEIGHT = 416;
+    public static final int CAPTURE_CSS_HEIGHT = 616;
     public static final int CAPTURE_DPR = 3;
 
     private final int cssWidth;
