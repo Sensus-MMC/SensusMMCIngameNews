@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 
 import sensusmmc.news.NewsTabletState;
+import sensusmmc.news.RemotePagePack;
 import sensusmmc.news.SensusNews;
 import sensusmmc.sensuspages.Page;
 import sensusmmc.sensuspages.PageLink;
@@ -64,6 +65,7 @@ public final class NewsTabletScreen extends Screen {
         top = (int) Math.round((height - GUI_HEIGHT * tabletScale) / 2.0);
         registerTexture(GUI_TEXTURE, false);
         NewsTabletContent.ensureBundledFeed();
+        RemotePagePack.refreshIfStale();
         loadManifest();
         showPage("home");
         NewsTabletState.markAllRead();
@@ -144,7 +146,8 @@ public final class NewsTabletScreen extends Screen {
     }
 
     private void loadManifest() {
-        manifest = null;
+        manifest = RemotePagePack.manifest();
+        if (manifest != null) return;
         if (minecraft == null) return;
         try {
             Resource resource = minecraft.getResourceManager().getResource(MANIFEST).orElse(null);
@@ -164,6 +167,7 @@ public final class NewsTabletScreen extends Screen {
         page = next;
         scroll = 0.0;
         for (Tile tile : next.tiles()) {
+            RemotePageTextures.get(tile.file());
             registerTexture(tileTexture(tile), true);
         }
     }
@@ -204,7 +208,8 @@ public final class NewsTabletScreen extends Screen {
         pose.translate(contentLeft, contentTop - scroll * tabletScale, 0.0);
         pose.scale((float) (viewport.scale() * tabletScale), (float) (viewport.scale() * tabletScale), 1.0f);
         for (Tile tile : page.tiles()) {
-            ResourceLocation texture = tileTexture(tile);
+            ResourceLocation texture = RemotePageTextures.get(tile.file());
+            if (texture == null) texture = tileTexture(tile);
             graphics.blit(
                 texture,
                 0,

@@ -19,6 +19,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import sensusmmc.news.NewsTabletState;
+import sensusmmc.news.RemotePagePack;
 import sensusmmc.news.SensusNews;
 import sensusmmc.sensuspages.Page;
 import sensusmmc.sensuspages.PageLink;
@@ -56,6 +57,7 @@ public final class NewsTabletScreen extends GuiScreen {
         left = (int) Math.round((width - GUI_WIDTH * tabletScale) / 2.0);
         top = (int) Math.round((height - GUI_HEIGHT * tabletScale) / 2.0);
         NewsTabletContent.ensureBundledFeed();
+        RemotePagePack.refreshIfStale();
         loadManifest();
         showPage("home");
         NewsTabletState.markAllRead();
@@ -143,7 +145,8 @@ public final class NewsTabletScreen extends GuiScreen {
     }
 
     private void loadManifest() {
-        manifest = null;
+        manifest = RemotePagePack.manifest();
+        if (manifest != null) return;
         try {
             IResource resource = mc.getResourceManager().getResource(MANIFEST);
             if (resource == null) return;
@@ -205,16 +208,30 @@ public final class NewsTabletScreen extends GuiScreen {
         float pageScale = (float) (viewport.scale() * tabletScale);
         GL11.glScalef(pageScale, pageScale, 1.0F);
         for (Tile tile : page.tiles()) {
-            drawQuad(
-                tileTexture(tile),
-                0.0F,
-                tile.y(),
-                tile.contentWidth(),
-                tile.contentHeight(),
-                (float) tile.contentWidth() / tile.width(),
-                (float) tile.contentHeight() / tile.height(),
-                true
-            );
+            Integer remote = RemotePageTextures.get(tile.file());
+            if (remote != null) {
+                drawQuad(
+                    remote.intValue(),
+                    0.0F,
+                    tile.y(),
+                    tile.contentWidth(),
+                    tile.contentHeight(),
+                    (float) tile.contentWidth() / tile.width(),
+                    (float) tile.contentHeight() / tile.height(),
+                    true
+                );
+            } else {
+                drawQuad(
+                    tileTexture(tile),
+                    0.0F,
+                    tile.y(),
+                    tile.contentWidth(),
+                    tile.contentHeight(),
+                    (float) tile.contentWidth() / tile.width(),
+                    (float) tile.contentHeight() / tile.height(),
+                    true
+                );
+            }
         }
         GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
@@ -237,6 +254,31 @@ public final class NewsTabletScreen extends GuiScreen {
         boolean smooth
     ) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+        int filter = smooth ? GL11.GL_LINEAR : GL11.GL_NEAREST;
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, y + height, 0.0, 0.0, v1);
+        tessellator.addVertexWithUV(x + width, y + height, 0.0, u1, v1);
+        tessellator.addVertexWithUV(x + width, y, 0.0, u1, 0.0);
+        tessellator.addVertexWithUV(x, y, 0.0, 0.0, 0.0);
+        tessellator.draw();
+    }
+
+    private static void drawQuad(
+        int textureId,
+        float x,
+        float y,
+        float width,
+        float height,
+        float u1,
+        float v1,
+        boolean smooth
+    ) {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
         int filter = smooth ? GL11.GL_LINEAR : GL11.GL_NEAREST;
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filter);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filter);

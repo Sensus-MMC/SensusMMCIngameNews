@@ -73,6 +73,7 @@ public final class NeoForgeClient {
         }
         if (minecraft.player == null) return;
         NewsTabletContent.ensureBundledFeed();
+        sensusmmc.news.RemotePagePack.refreshIfStale();
         long now = System.currentTimeMillis();
         if (polling || now < nextPoll) return;
         polling = true;

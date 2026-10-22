@@ -3,6 +3,7 @@ package sensusmmc.news;
 public final class SensusNews {
     public static final String MOD_ID = "sensusmmc";
     public static final String SITE_URL = "https://sensusmmc.news";
+    public static final String RAW_BASE = "https://raw.githubusercontent.com/Sensus-MMC/Sensus/main";
 
     private SensusNews() {
     }

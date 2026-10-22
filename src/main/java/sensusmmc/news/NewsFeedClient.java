@@ -66,11 +66,36 @@ public final class NewsFeedClient {
             int status = connection.getResponseCode();
             requireHttps(connection);
             if (status == 404) {
-                return fetchFromSite();
+                try {
+                    return fetchJson(SensusNews.RAW_BASE + "/feed.json");
+                } catch (IOException error) {
+                    return fetchFromSite();
+                }
             }
             if (status < 200 || status >= 300) {
                 throw new IOException("Feed returned HTTP " + status);
             }
+            try (InputStream input = connection.getInputStream()) {
+                return NewsFeed.fromJson(read(input));
+            }
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    private static NewsFeed fetchJson(String value) throws IOException {
+        if (!SensusNews.isAllowedUrl(value)) throw new IOException("Feed URL must use HTTPS");
+        HttpURLConnection connection = (HttpURLConnection) new URL(value).openConnection();
+        try {
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(15000);
+            connection.setInstanceFollowRedirects(true);
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("User-Agent", "SensusMMC-Ingame-News/0.1");
+            int status = connection.getResponseCode();
+            requireHttps(connection);
+            if (status < 200 || status >= 300) throw new IOException("Feed returned HTTP " + status);
             try (InputStream input = connection.getInputStream()) {
                 return NewsFeed.fromJson(read(input));
             }

@@ -20,6 +20,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import sensusmmc.news.NewsTabletState;
+import sensusmmc.news.RemotePagePack;
 import sensusmmc.news.SensusNews;
 import sensusmmc.sensuspages.Page;
 import sensusmmc.sensuspages.PageLink;
@@ -57,6 +58,7 @@ public final class NewsTabletScreen extends GuiScreen {
         left = (int) Math.round((width - GUI_WIDTH * tabletScale) / 2.0);
         top = (int) Math.round((height - GUI_HEIGHT * tabletScale) / 2.0);
         NewsTabletContent.ensureBundledFeed();
+        RemotePagePack.refreshIfStale();
         loadManifest();
         showPage("home");
         NewsTabletState.markAllRead();
@@ -148,7 +150,8 @@ public final class NewsTabletScreen extends GuiScreen {
     }
 
     private void loadManifest() {
-        manifest = null;
+        manifest = RemotePagePack.manifest();
+        if (manifest != null) return;
         try {
             IResource resource = mc.getResourceManager().getResource(MANIFEST);
             if (resource == null) return;
@@ -206,9 +209,16 @@ public final class NewsTabletScreen extends GuiScreen {
         float pageScale = (float) (viewport.scale() * tabletScale);
         GlStateManager.scale(pageScale, pageScale, 1.0);
         for (Tile tile : page.tiles()) {
-            mc.getTextureManager().bindTexture(tileTexture(tile));
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            Integer remote = RemotePageTextures.get(tile.file());
+            if (remote != null) {
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, remote.intValue());
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            } else {
+                mc.getTextureManager().bindTexture(tileTexture(tile));
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+            }
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             Gui.drawModalRectWithCustomSizedTexture(
                 0,
