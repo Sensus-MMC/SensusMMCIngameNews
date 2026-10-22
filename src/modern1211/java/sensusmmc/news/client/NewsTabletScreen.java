@@ -38,7 +38,7 @@ public final class NewsTabletScreen extends Screen {
     private static final Set<ResourceLocation> REGISTERED = new HashSet<ResourceLocation>();
     private static final int GUI_WIDTH = 212;
     private static final int GUI_HEIGHT = 251;
-    private static final int CONTENT_X = 6;
+    private static final int CONTENT_X = 8;
     private static final int CONTENT_Y = 6;
     private static final int CONTENT_WIDTH = 200;
     private static final int CONTENT_HEIGHT = 239;
@@ -57,8 +57,8 @@ public final class NewsTabletScreen extends Screen {
     @Override
     protected void init() {
         double guiScale = minecraft.getWindow().getGuiScale();
-        double desired = 4.8 / guiScale;
-        double fit = Math.min((width - 24.0) / GUI_WIDTH, (height - 24.0) / GUI_HEIGHT);
+        double desired = 6.4 / guiScale;
+        double fit = Math.min((width - 12.0) / GUI_WIDTH, (height - 12.0) / GUI_HEIGHT);
         tabletScale = Math.max(0.5, Math.min(desired, fit));
         left = (int) Math.round((width - GUI_WIDTH * tabletScale) / 2.0);
         top = (int) Math.round((height - GUI_HEIGHT * tabletScale) / 2.0);
