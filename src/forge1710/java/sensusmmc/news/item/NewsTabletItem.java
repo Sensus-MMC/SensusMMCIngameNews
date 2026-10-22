@@ -1,4 +1,4 @@
-package sensusmmc.news.forge;
+package sensusmmc.news.item;
 
 import java.util.List;
 
